@@ -23,9 +23,12 @@ def calculate_crossentropy(tokenizer: Union[PreTrainedTokenizer, PreTrainedToken
     if max_seq_len is not None:
         if seq_len >= max_seq_len:
             return None
-    tokenized = tokenized.to(model.device)
     with torch.no_grad():
-        res = model(input_ids=tokenized['input_ids'], attention_mask=tokenized['attention_mask'],
-                    labels=tokenized['labels'], return_dict=True)
+        res = model(
+            input_ids=torch.tensor(data=[tokenized['input_ids']], dtype=torch.long, device=model.device),
+            attention_mask=torch.tensor(data=[tokenized['attention_mask']], dtype=torch.long, device=model.device),
+            labels=torch.tensor(data=[tokenized['labels']], dtype=torch.long, device=model.device),
+            return_dict=True
+        )
         loss_value = float(res.loss.float().cpu().numpy().flatten()[0])
     return seq_len, loss_value
