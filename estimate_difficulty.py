@@ -64,8 +64,8 @@ def main():
 
     model = AutoModelForCausalLM.from_pretrained(
         args.model_name,
-        torch_dtype='auto',
-        device_map='auto'
+        torch_dtype=torch.float16,
+        device_map='cuda:0'
     )
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
 
