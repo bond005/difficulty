@@ -48,7 +48,10 @@ def main():
             if not os.path.isdir(basedir):
                 raise IOError(f'The directory "{basedir}" does not exist!')
 
-    estimated_samples = load_samples(input_fname)
+    if args.max_seq_len is None:
+        estimated_samples = load_samples(input_fname)
+    else:
+        estimated_samples = load_samples(input_fname, max_line_size=3 * args.max_seq_len)
     if len(estimated_samples) == 0:
         raise IOError(f'The file "{input_fname}" is empty!')
     print(f'There are {len(estimated_samples)} estimated samples.')
