@@ -27,18 +27,18 @@ def load_samples(fname: str,
                     if not isinstance(loaded_sample, dict):
                         err_msg += f' Expected {type({"a": 1})}, got {type(loaded_sample)}.'
                         raise IOError(err_msg)
-                    if 'query' not in loaded_sample:
+                    if 'response' not in loaded_sample:
                         err_msg += f' The keys {list(loaded_sample.keys())} are wrong!'
                         raise IOError(err_msg)
-                    if not isinstance(loaded_sample['query'], str):
-                        err_msg += (f' The query is wrong! Expected {type("a")}, '
-                                    f'got {type(loaded_sample["query"])}.')
+                    if not isinstance(loaded_sample['response'], str):
+                        err_msg += (f' The response is wrong! Expected {type("a")}, '
+                                    f'got {type(loaded_sample["response"])}.')
                         raise IOError(err_msg)
-                    if len(loaded_sample['query'].strip()) == 0:
-                        err_msg += ' The query is empty!'
+                    if len(loaded_sample['response'].strip()) == 0:
+                        err_msg += ' The response is empty!'
                         raise IOError(err_msg)
                     new_sample: Dict[str, Union[str, List[Tuple[str, str]]]] = {
-                        'query': loaded_sample['query']
+                        'response': loaded_sample['response']
                     }
                     if 'system' in loaded_sample:
                         if not isinstance(loaded_sample['system'], str):
@@ -46,16 +46,22 @@ def load_samples(fname: str,
                                         f'got {type(loaded_sample["system"])}.')
                             raise IOError(err_msg)
                         new_sample['system'] = loaded_sample['system']
-                    if 'response' in loaded_sample:
-                        if not isinstance(loaded_sample['response'], str):
-                            err_msg += (f' The response is wrong! Expected {type("a")}, '
-                                        f'got {type(loaded_sample["response"])}.')
+                    if 'query' in loaded_sample:
+                        if not isinstance(loaded_sample['query'], str):
+                            err_msg += (f' The query is wrong! Expected {type("a")}, '
+                                        f'got {type(loaded_sample["query"])}.')
                             raise IOError(err_msg)
-                        if len(loaded_sample['response'].strip()) == 0:
-                            err_msg += ' The response is empty!'
+                        if len(loaded_sample['query'].strip()) == 0:
+                            err_msg += ' The query is empty!'
                             raise IOError(err_msg)
-                        new_sample['response'] = loaded_sample['response']
+                        new_sample['query'] = loaded_sample['query']
+                    if ('system' in loaded_sample) and ('query' not in loaded_sample):
+                        err_msg += ' The query is not found!'
+                        raise IOError(err_msg)
                     if 'history' in loaded_sample:
+                        if 'query' not in loaded_sample:
+                            err_msg += ' The query is not found!'
+                            raise IOError(err_msg)
                         if not isinstance(loaded_sample['history'], list):
                             err_msg += (f' The history is wrong! Expected {type([1, 2])}, '
                                         f'got {type(loaded_sample["history"])}.')
@@ -88,9 +94,9 @@ def save_samples(fname: str, samples: List[Dict[str, Union[str, List[Tuple[str, 
             new_sample: Dict[str, Union[str, List[Tuple[str, str]]]] = dict()
             if 'system' in cur:
                 new_sample['system'] = cur['system']
-            new_sample['query'] = cur['query']
-            if 'response' in cur:
-                new_sample['response'] = cur['response']
+            if 'query' in cur:
+                new_sample['query'] = cur['query']
+            new_sample['response'] = cur['response']
             if 'history' in cur:
                 new_sample['history'] = cur['history']
             for k in sorted(list(set(cur.keys()) - {'system', 'query', 'response', 'history'})):

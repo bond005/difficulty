@@ -71,13 +71,19 @@ def main():
 
     with codecs.open(output_fname, mode='w', encoding='utf-8', buffering=0) as fp:
         for idx, val in enumerate(tqdm(estimated_samples)):
-            res = calculate_crossentropy(
-                tokenizer, model, user_prompt=val['query'],
-                system_prompt=val.get('system', None),
-                history=val.get('history', None),
-                reference=val.get('response', None),
-                max_seq_len=args.max_seq_len
-            )
+            if 'query' in val:
+                res = calculate_crossentropy(
+                    tokenizer, model, user_prompt=val['query'],
+                    system_prompt=val.get('system', None),
+                    history=val.get('history', None),
+                    reference=val['response'],
+                    max_seq_len=args.max_seq_len
+                )
+            else:
+                res = calculate_crossentropy(
+                    tokenizer, model, user_prompt=val['response'],
+                    max_seq_len=args.max_seq_len
+                )
             if res is None:
                 print(f'The sample {idx} is too large.')
             else:
