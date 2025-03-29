@@ -7,10 +7,10 @@ from transformers import PreTrainedTokenizer, PreTrainedTokenizerFast
 from transformers import PreTrainedModel, GenerationMixin
 
 try:
-    from tokenization_utils import prepare_sample
+    from difficulty.tokenization_utils import prepare_sample
 except:
     sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-    from tokenization_utils import prepare_sample
+    from difficulty.tokenization_utils import prepare_sample
 
 
 def calculate_crossentropy(tokenizer: Union[PreTrainedTokenizer, PreTrainedTokenizerFast],
