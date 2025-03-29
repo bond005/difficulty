@@ -1,10 +1,16 @@
+import os
+import sys
 from typing import List, Optional, Tuple, Union
 
 import torch
 from transformers import PreTrainedTokenizer, PreTrainedTokenizerFast
 from transformers import PreTrainedModel, GenerationMixin
 
-from tokenization_utils import prepare_sample
+try:
+    from tokenization_utils import prepare_sample
+except:
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+    from tokenization_utils import prepare_sample
 
 
 def calculate_crossentropy(tokenizer: Union[PreTrainedTokenizer, PreTrainedTokenizerFast],

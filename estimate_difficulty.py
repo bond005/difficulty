@@ -4,6 +4,7 @@ import copy
 import json
 import os
 import random
+import sys
 from typing import Dict, List, Tuple, Union
 
 import numpy as np
@@ -11,8 +12,13 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from tqdm import tqdm
 
-from difficulty.io_utils import load_samples
-from difficulty.crossentropy import calculate_crossentropy
+try:
+    from difficulty.io_utils import load_samples
+    from difficulty.crossentropy import calculate_crossentropy
+except:
+    sys.path.append(os.path.dirname(__file__))
+    from difficulty.io_utils import load_samples
+    from difficulty.crossentropy import calculate_crossentropy
 
 
 DEFAULT_RANDOM_SEED: int = 42
