@@ -25,7 +25,7 @@ def load_samples(fname: str,
                     except Exception as err:
                         loaded_sample = None
                         warn_msg = err_msg + ' JSON cannot be parsed. ' + str(err)
-                    if len(warn_msg) == 0:
+                    if len(warn_msg) > 0:
                         warnings.warn(warn_msg)
                     elif not isinstance(loaded_sample, dict):
                         warn_msg = err_msg + f' Expected {type({"a": 1})}, got {type(loaded_sample)}.'

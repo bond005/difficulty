@@ -6,6 +6,7 @@ import os
 import random
 import sys
 from typing import Dict, List, Tuple, Union
+import warnings
 
 import numpy as np
 import torch
@@ -62,11 +63,20 @@ def main():
         raise IOError(f'The file "{input_fname}" is empty!')
     print(f'There are {len(estimated_samples)} estimated samples.')
 
-    model = AutoModelForCausalLM.from_pretrained(
-        args.model_name,
-        torch_dtype=torch.float16,
-        device_map='cuda:0'
-    )
+    try:
+        model = AutoModelForCausalLM.from_pretrained(
+            args.model_name,
+            torch_dtype=torch.float16,
+            device_map='cuda:0',
+            attn_implementation='sdpa'
+        )
+    except Exception as err:
+        warnings.warn(str(err))
+        model = AutoModelForCausalLM.from_pretrained(
+            args.model_name,
+            torch_dtype=torch.float16,
+            device_map='cuda:0'
+        )
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
 
     with codecs.open(output_fname, mode='w', encoding='utf-8', buffering=0) as fp:
